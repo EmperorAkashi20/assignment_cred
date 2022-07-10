@@ -41,10 +41,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: "For CRED",
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
       //!The app opens on this screen.
       initialRoute: initialScreen,
       //!Generating all the routes. Whenever a new router is added, the app needs to be hot restarted in order to get the new router inserted.
