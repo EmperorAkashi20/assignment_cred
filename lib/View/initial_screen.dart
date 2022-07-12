@@ -1,14 +1,14 @@
-import 'package:assignment_cred/Device%20Manager/screen_constants.dart';
+import 'dart:async';
+
 import 'package:assignment_cred/Device%20Manager/text_styles.dart';
+import 'package:assignment_cred/View/state_two_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../Controller/initial_screen_controller.dart';
-import '../WIdgets/date_card.dart';
-import '../WIdgets/rounded_contaner_for_extra_options.dart';
 
 class InitalScreen extends StatelessWidget {
   const InitalScreen({Key? key}) : super(key: key);
@@ -84,43 +84,48 @@ class InitalScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          initialScreenController.isBottomSheetOneOpen.value ==
-                                  false
-                              ? Text(
-                                  'Name, How much do you need?',
-                                  style: TextStyles.headingTextStyle,
+                          AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 300),
+                            firstChild: Text(
+                              'Name, How much do you need?',
+                              style: TextStyles.headingTextStyle,
+                              textAlign: TextAlign.left,
+                            ),
+                            secondChild: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Credit Amount",
+                                  style: TextStyle(
+                                    color: Colors.blueGrey,
+                                    fontSize: windowWidth * 0.03,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                   textAlign: TextAlign.left,
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Credit Amount",
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontSize: windowWidth * 0.03,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    Text(
-                                      "₹ " +
-                                          initialScreenController
-                                              .amountValue.value
-                                              .toStringAsFixed(2)
-                                              .replaceAllMapped(
-                                                  RegExp(
-                                                      r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                                                  (Match m) => '${m[1]},'),
-                                      style: TextStyle(
-                                        color: Colors.blueGrey,
-                                        fontSize: windowWidth * 0.04,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
                                 ),
+                                Text(
+                                  "₹ " +
+                                      initialScreenController.amountValue.value
+                                          .toStringAsFixed(2)
+                                          .replaceAllMapped(
+                                              RegExp(
+                                                  r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+                                              (Match m) => '${m[1]},'),
+                                  style: TextStyle(
+                                    color: Colors.blueGrey,
+                                    fontSize: windowWidth * 0.04,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                            crossFadeState: initialScreenController
+                                        .isBottomSheetOneOpen.value ==
+                                    false
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                          ),
                           SizedBox(
                             height: windowHeight * 0.01,
                           ),
@@ -212,12 +217,30 @@ class InitalScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
+                      Timer(const Duration(seconds: 0), () {
+                        Get.isDialogOpen ?? true
+                            ? const Offstage()
+                            : Get.dialog(
+                                Center(
+                                  child: LoadingAnimationWidget.inkDrop(
+                                    size: 50,
+                                    color: Colors.orange.withOpacity(0.9),
+                                  ),
+                                ),
+                                barrierDismissible: false);
+                      });
+
+                      await Future.delayed(
+                        const Duration(milliseconds: 500),
+                      );
+                      if (Get.isDialogOpen ?? false) Get.back();
                       initialScreenController.isBottomSheetOneOpen.value = true;
                       debugPrint(initialScreenController
                           .isBottomSheetOneOpen.value
                           .toString());
                       showMaterialModalBottomSheet(
+                        animationCurve: Curves.easeIn,
                         bounce: true,
                         enableDrag: false,
                         isDismissible: false,
@@ -231,6 +254,7 @@ class InitalScreen extends StatelessWidget {
                           );
                         },
                       );
+                      if (Get.isDialogOpen ?? false) Get.back();
                     },
                     child: SelectionButton(
                       windowHeight: windowHeight,
@@ -285,316 +309,6 @@ class SelectionButton extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ViewTwoState extends StatelessWidget {
-  final InitialScreenController initialScreenController = Get.find();
-  ViewTwoState({
-    Key? key,
-    required this.windowHeight,
-    required this.windowWidth,
-  }) : super(key: key);
-
-  final double windowHeight;
-  final double windowWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0XFF1B2125),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      height: windowHeight * 0.785,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          initialScreenController.isBottomSheetTwoOpen.value ==
-                                  false
-                              ? Text(
-                                  'how do you wish to repay?',
-                                  style: TextStyles.headingTextStyle,
-                                  textAlign: TextAlign.left,
-                                )
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'EMI',
-                                          style: TextStyles.subHeadingTextStyle,
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        Text(
-                                          '₹3,000 /mo',
-                                          style: TextStyles.headingTextStyle,
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      width: windowWidth * 0.2,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'duration',
-                                          style: TextStyles.subHeadingTextStyle,
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        Text(
-                                          '12 months',
-                                          style: TextStyles.headingTextStyle,
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                          SizedBox(
-                            height: windowHeight * 0.015,
-                          ),
-                          Text(
-                            'choose one of our recommended plans or\nmake your own',
-                            style: TextStyles.subHeadingTextStyle,
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                        initialScreenController.isBottomSheetOneOpen.value =
-                            false;
-                      },
-                      child: Icon(
-                        Icons.arrow_drop_down_outlined,
-                        color: Colors.white,
-                        size: windowHeight * 0.04,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: windowHeight * 0.01,
-                ),
-                SizedBox(
-                  height: windowHeight * 0.23,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: DataCardForList(
-                          windowHeight: windowHeight,
-                          windowWidth: windowWidth,
-                          color: index % 2 == 0
-                              ? Colors.grey.shade800.withOpacity(0.9)
-                              : Colors.blueGrey.withOpacity(0.9),
-                          icon: Icons.done,
-                          iconColor:
-                              index == 0 ? Colors.black : Colors.transparent,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                RoundedContainerForExtraOptions(
-                  windowHeight: windowHeight,
-                  windowWidth: windowWidth,
-                  title: "Or Create Your Own",
-                ),
-              ],
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              initialScreenController.isBottomSheetTwoOpen.value = true;
-              debugPrint(initialScreenController.isBottomSheetOneOpen.value
-                  .toString());
-              showMaterialModalBottomSheet(
-                bounce: true,
-                enableDrag: false,
-                isDismissible: false,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                context: context,
-                builder: (BuildContext context) {
-                  return StateThreeView(
-                    windowHeight: windowHeight,
-                    windowWidth: windowWidth,
-                  );
-                },
-              );
-            },
-            child: SelectionButton(
-              windowHeight: windowHeight,
-              windowWidth: windowWidth,
-              title: 'Select Your bank account',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class StateThreeView extends StatelessWidget {
-  final InitialScreenController initialScreenController = Get.find();
-
-  StateThreeView({
-    Key? key,
-    required this.windowHeight,
-    required this.windowWidth,
-  }) : super(key: key);
-
-  final double windowHeight;
-  final double windowWidth;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: windowHeight * 0.72,
-      decoration: BoxDecoration(
-        color: const Color(0XFF1B2125),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'where should we send the money?',
-                      style: TextStyles.headingTextStyle,
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(
-                      height: windowHeight * 0.015,
-                    ),
-                    Text(
-                      'amount will be credited to this bank account,\nEMI will also be debited from this bank account',
-                      style: TextStyles.subHeadingTextStyle,
-                      textAlign: TextAlign.left,
-                    ),
-                    SizedBox(
-                      height: windowHeight * 0.02,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: windowHeight * 0.07,
-                          width: windowWidth * 0.15,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Center(
-                            child: Image.network(
-                              'https://staticimg.titan.co.in/Common_Assets/Logo/HDFC_Stamp.png',
-                              height: windowHeight * 0.05,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: windowWidth * 0.05,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'HDFC Bank',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: FontSize.s17,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              '50112345019034',
-                              style: TextStyle(
-                                color: Colors.blueGrey.shade500,
-                                fontSize: FontSize.s15,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          width: windowWidth * 0.2,
-                        ),
-                        CircleAvatar(
-                          radius: windowHeight * 0.015,
-                          backgroundColor: Colors.blueGrey.withOpacity(0.5),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: windowHeight * 0.02,
-                    ),
-                    RoundedContainerForExtraOptions(
-                      windowHeight: windowHeight,
-                      windowWidth: windowWidth,
-                      title: "Change Account",
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Get.back();
-                    initialScreenController.isBottomSheetTwoOpen.value = false;
-                  },
-                  child: Icon(
-                    Icons.arrow_drop_down_outlined,
-                    color: Colors.white,
-                    size: windowHeight * 0.04,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SelectionButton(
-            windowHeight: windowHeight,
-            windowWidth: windowWidth,
-            title: 'Select Your bank account',
-          ),
-        ],
       ),
     );
   }
