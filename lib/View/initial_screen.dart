@@ -7,6 +7,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 import '../Controller/initial_screen_controller.dart';
+import '../WIdgets/date_card.dart';
+import '../WIdgets/rounded_contaner_for_extra_options.dart';
 
 class InitalScreen extends StatelessWidget {
   const InitalScreen({Key? key}) : super(key: key);
@@ -340,11 +342,11 @@ class ViewTwoState extends StatelessWidget {
                                       children: [
                                         Text(
                                           'EMI',
-                                          style: TextStyles.headingTextStyle,
+                                          style: TextStyles.subHeadingTextStyle,
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          '₹ 3,000 /mo',
+                                          '₹3,000 /mo',
                                           style: TextStyles.headingTextStyle,
                                           textAlign: TextAlign.left,
                                         ),
@@ -358,12 +360,12 @@ class ViewTwoState extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'EMI',
-                                          style: TextStyles.headingTextStyle,
+                                          'duration',
+                                          style: TextStyles.subHeadingTextStyle,
                                           textAlign: TextAlign.left,
                                         ),
                                         Text(
-                                          '₹ 3,000 /mo',
+                                          '12 months',
                                           style: TextStyles.headingTextStyle,
                                           textAlign: TextAlign.left,
                                         ),
@@ -421,22 +423,10 @@ class ViewTwoState extends StatelessWidget {
                     },
                   ),
                 ),
-                Container(
-                  height: windowHeight * 0.05,
-                  width: windowWidth * 0.45,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blueGrey.withOpacity(0.9),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Create Your Own Plan",
-                      style: TextStyle(color: Colors.blueGrey.withOpacity(0.9)),
-                    ),
-                  ),
+                RoundedContainerForExtraOptions(
+                  windowHeight: windowHeight,
+                  windowWidth: windowWidth,
+                  title: "Or Create Your Own",
                 ),
               ],
             ),
@@ -488,7 +478,7 @@ class StateThreeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: windowHeight * 0.685,
+      height: windowHeight * 0.72,
       decoration: BoxDecoration(
         color: const Color(0XFF1B2125),
         borderRadius: BorderRadius.circular(30),
@@ -498,44 +488,103 @@ class StateThreeView extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-            child: Column(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Text(
+                      'where should we send the money?',
+                      style: TextStyles.headingTextStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: windowHeight * 0.015,
+                    ),
+                    Text(
+                      'amount will be credited to this bank account,\nEMI will also be debited from this bank account',
+                      style: TextStyles.subHeadingTextStyle,
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: windowHeight * 0.02,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          'where should we send the money?',
-                          style: TextStyles.headingTextStyle,
-                          textAlign: TextAlign.left,
+                        Container(
+                          height: windowHeight * 0.07,
+                          width: windowWidth * 0.15,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Center(
+                            child: Image.network(
+                              'https://staticimg.titan.co.in/Common_Assets/Logo/HDFC_Stamp.png',
+                              height: windowHeight * 0.05,
+                            ),
+                          ),
                         ),
                         SizedBox(
-                          height: windowHeight * 0.015,
+                          width: windowWidth * 0.05,
                         ),
-                        Text(
-                          'amount will be credited to this bank account,\nEMI will also be debited from this bank account',
-                          style: TextStyles.subHeadingTextStyle,
-                          textAlign: TextAlign.left,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'HDFC Bank',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: FontSize.s17,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              '50112345019034',
+                              style: TextStyle(
+                                color: Colors.blueGrey.shade500,
+                                fontSize: FontSize.s15,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: windowWidth * 0.2,
+                        ),
+                        CircleAvatar(
+                          radius: windowHeight * 0.015,
+                          backgroundColor: Colors.blueGrey.withOpacity(0.5),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.back();
-                        initialScreenController.isBottomSheetTwoOpen.value =
-                            false;
-                      },
-                      child: Icon(
-                        Icons.arrow_drop_down_outlined,
-                        color: Colors.white,
-                        size: windowHeight * 0.04,
-                      ),
+                    SizedBox(
+                      height: windowHeight * 0.02,
+                    ),
+                    RoundedContainerForExtraOptions(
+                      windowHeight: windowHeight,
+                      windowWidth: windowWidth,
+                      title: "Change Account",
                     ),
                   ],
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.back();
+                    initialScreenController.isBottomSheetTwoOpen.value = false;
+                  },
+                  child: Icon(
+                    Icons.arrow_drop_down_outlined,
+                    color: Colors.white,
+                    size: windowHeight * 0.04,
+                  ),
                 ),
               ],
             ),
@@ -546,99 +595,6 @@ class StateThreeView extends StatelessWidget {
             title: 'Select Your bank account',
           ),
         ],
-      ),
-    );
-  }
-}
-
-class DataCardForList extends StatelessWidget {
-  const DataCardForList({
-    Key? key,
-    required this.windowHeight,
-    required this.windowWidth,
-    required this.color,
-    required this.icon,
-    required this.iconColor,
-  }) : super(key: key);
-
-  final double windowHeight;
-  final double windowWidth;
-  final Color color;
-  final IconData icon;
-  final Color iconColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Container(
-        height: windowHeight * 0.2,
-        width: windowWidth * 0.38,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 18.0,
-            vertical: 25,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                backgroundColor: color,
-                child: Center(
-                  child: Icon(
-                    icon,
-                    color: iconColor,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: windowHeight * 0.03,
-              ),
-              Row(
-                children: [
-                  Text(
-                    '₹1000 ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: FontSize.s16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '/ mo',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: FontSize.s14,
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                'for 12 months',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: FontSize.s14,
-                ),
-              ),
-              SizedBox(
-                height: windowHeight * 0.01,
-              ),
-              Text(
-                'See Calculations',
-                style: TextStyle(
-                  color: Colors.white38,
-                  fontSize: FontSize.s14,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
